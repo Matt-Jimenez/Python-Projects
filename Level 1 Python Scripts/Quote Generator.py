@@ -21,7 +21,7 @@ source_selection_var = tk.StringVar()
 #function for preloading quotes (currently fetches general quotes)
 def preload_quotes():
     global quotes
-    
+
     # For now, this function doesn't use the source_selection_var.
     # That will be part of a later subtask.
     print("***Loading some more quotes***")
@@ -51,24 +51,24 @@ def fetch_poetry_quote():
     try:
         response = requests.get(poetry_api_url, timeout=10) # Added timeout
         response.raise_for_status()  # Raises an HTTPError for bad responses (4XX or 5XX)
-        
+
         data = response.json()
-        
+
         if data and isinstance(data, list):
             poem_data = data[0]
             author = poem_data.get("author", "Unknown Author")
             lines = poem_data.get("lines", [])
-            
+
             if not lines:
                 return f"Poetry quote found, but no lines available.\n\nBy {author}"
-            
+
             formatted_poem = "\n".join(lines)
             return f"{formatted_poem}\n\nBy {author}"
         else:
             # Handle cases where the response is not as expected (e.g., not a list, or empty)
             print(f"Unexpected API response structure: {data}")
             return "Poetry quote not found in API response.\n\nN/A"
-            
+
     except requests.exceptions.Timeout:
         print("Error fetching poetry quote: Request timed out.")
         return "Could not fetch poetry quote (timeout). Please try again.\n\nN/A"
@@ -104,10 +104,10 @@ def get_random_quote():
         poetry_quote_text = fetch_poetry_quote()
         quote_label.configure(text=poetry_quote_text)
         # No need to manage quote_number or the general 'quotes' list for poetry
-    
+
     elif selected_source == "General/Literary":
         # Use existing logic for general/literary quotes
-        
+
         # Condition to preload:
         # 1. 'quotes' list is empty.
         # 2. 'quote_number' has reached or exceeded the length of 'quotes'.
@@ -118,7 +118,7 @@ def get_random_quote():
             message = "No general quotes available. "
             if quotes and quote_number >= len(quotes): # Specifically ran out
                 message = "Reached the end of preloaded general quotes. "
-            
+
             quote_label.configure(text=message + "Loading more, please wait or click again shortly.")
             if not Thread(target=preload_quotes).is_alive(): # Start preload only if not already running
                  thread = Thread(target=preload_quotes)
@@ -128,7 +128,7 @@ def get_random_quote():
         # Display the quote
         quote_label.configure(text=quotes[quote_number])
         quote_number += 1
-        
+
         # Preload if nearing the end and not already preloading
         if should_preload:
             print(f"General quotes state: (quote_number: {quote_number}, len: {len(quotes)}). Triggering preload if needed.")
@@ -153,7 +153,7 @@ source_label.grid(row=0, column=0, stick="W", padx=20, pady=(10,0))
 # Combobox for source selection
 source_options = ["General/Literary", "Poetry"]
 # Ensure ttk.Combobox is used, not tk.Combobox if tk was aliased as ttk
-source_combobox = ttk.Combobox(window, textvariable=source_selection_var, values=source_options, state="readonly", font=('Courier', 12), width=30) 
+source_combobox = ttk.Combobox(window, textvariable=source_selection_var, values=source_options, state="readonly", font=('Courier', 12), width=30)
 source_combobox.grid(row=1, column=0, stick="EW", padx=20, pady=(0,10))
 source_selection_var.set(source_options[0]) # Set default value
 

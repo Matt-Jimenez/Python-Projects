@@ -123,7 +123,7 @@ def get_random_quote():
             if quotes and quote_number >= len(quotes):
                 message = "Reached the end of preloaded general quotes. "
             quote_label.configure(text=message + "Loading more, please wait or click again shortly.")
-            
+
             if not (_active_preload_thread_obj and _active_preload_thread_obj.is_alive()):
                  print("LOGIC: Starting preload due to lack/end of quotes.")
                  thread = Thread(target=preload_quotes, name="preload_quotes_thread_ অভাব")
@@ -134,7 +134,7 @@ def get_random_quote():
 
         quote_label.configure(text=quotes[quote_number])
         quote_number += 1
-        
+
         if should_trigger_preload and not needs_preload_now :
             print(f"LOGIC: General quotes state: (quote_number: {quote_number}, len: {len(quotes)}). Triggering preload if needed.")
             if not (_active_preload_thread_obj and _active_preload_thread_obj.is_alive()):
@@ -159,9 +159,9 @@ quote_label = MockLabel(window, text="Click 'Generate' to see a random quote!", 
 # --- Test Harness ---
 if __name__ == "__main__":
     print("--- Test Run Start ---")
-    
+
     print("Waiting for initial preload to complete (max 10s)...")
-    initial_preload_thread.join(timeout=10) 
+    initial_preload_thread.join(timeout=10)
     if initial_preload_thread.is_alive():
         print("WARN: Initial preload thread still alive after timeout!")
     else:
@@ -172,8 +172,8 @@ if __name__ == "__main__":
     for i in range(5):
         print(f"Simulating click {i+1} for General/Literary...")
         get_random_quote()
-        time.sleep(0.1) 
-    
+        time.sleep(0.1)
+
     if _active_preload_thread_obj and _active_preload_thread_obj.is_alive():
         print("Waiting for general preload from Test 1 to finish (max 7s)...")
         _active_preload_thread_obj.join(timeout=7)
@@ -191,7 +191,7 @@ if __name__ == "__main__":
         print("SIMULATING poetry fetch error...")
         return "This is a simulated poetry fetch error.\n\nBy System"
     globals()['fetch_poetry_quote'] = mock_fetch_poetry_error_func
-    
+
     source_selection_var.set("Poetry")
     print("Simulating click for Poetry (with error)...")
     get_random_quote()
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     source_selection_var.set("General/Literary")
     print(f"Starting exhaust test. Quotes: {len(quotes)}, Number: {quote_number}")
     remaining_general_quotes = len(quotes) - quote_number if quote_number < len(quotes) else 0
-    clicks_to_exhaust_and_trigger = remaining_general_quotes + 1 
+    clicks_to_exhaust_and_trigger = remaining_general_quotes + 1
     print(f"Will simulate {clicks_to_exhaust_and_trigger} clicks to exhaust general quotes and trigger reload.")
     for i in range(clicks_to_exhaust_and_trigger):
         print(f"Simulating exhaust click {i+1} for General/Literary...")

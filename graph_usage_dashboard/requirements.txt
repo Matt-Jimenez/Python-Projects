@@ -1,0 +1,4 @@
+O365
+matplotlib
+pandas
+openpyxl
